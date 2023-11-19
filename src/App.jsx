@@ -1,14 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
-import "./App.css";
-import "./index.css";
-import axios from "axios";
+import { useState, useEffect, useCallback } from 'react';
+import './App.css';
+import './index.css';
+import axios from 'axios';
 
 function App() {
   const [albumId, setAlbumId] = useState(1);
-  const [newAlbumId, setNewAlbumId] = useState("");
+  const [newAlbumId, setNewAlbumId] = useState('');
   const [photos, setPhotos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const fetchPhotos = useCallback(async () => {
     if (albumId === null) {
@@ -24,7 +24,7 @@ function App() {
     }
 
     setIsLoading(true);
-    setError("");
+    setError('');
 
     try {
       const response = await axios.get(
@@ -32,24 +32,18 @@ function App() {
       );
 
       const data = response.data;
-      const imagesPromises = data.map(async (photo) => {
-        const image = new Image();
-        image.src = photo.url;
-        await image.decode();
+      const photoData = data.map((photo) => {
         return {
-          ...photo,
-          image,
-          isLoaded: true,
+          id: photo.id,
+          title: photo.title,
         };
       });
 
-      const photosWithImages = await Promise.all(imagesPromises);
-
-      setPhotos(photosWithImages);
+      setPhotos(photoData);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      setError("Error loading photos. Please try again later.");
+      setError('Error loading photos. Please try again later.');
       console.error(error);
     }
   }, [albumId, setAlbumId, setIsLoading, setPhotos]);
@@ -61,29 +55,29 @@ function App() {
   const goToPreviousAlbum = () => {
     const previousAlbumId = albumId > 1 ? albumId - 1 : 100;
     setAlbumId(previousAlbumId);
-    setNewAlbumId("");
+    setNewAlbumId('');
   };
 
   const goToNextAlbum = () => {
     const nextAlbumId = albumId < 100 ? albumId + 1 : 1;
     setAlbumId(nextAlbumId);
-    setNewAlbumId("");
+    setNewAlbumId('');
   };
 
   const handleManualInput = () => {
-    if (newAlbumId !== "") {
+    if (newAlbumId !== '') {
       if (newAlbumId >= 1 && newAlbumId <= 100) {
         setAlbumId(Number(newAlbumId));
-        setError("");
+        setError('');
       } else {
-        setError("Please enter a value between 1-100");
+        setError('Please enter a value between 1-100');
       }
-      setNewAlbumId("");
+      setNewAlbumId('');
     }
   };
 
   const handleInputKeyPress = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       handleManualInput();
     }
   };
@@ -98,7 +92,7 @@ function App() {
           id="albumIdInput"
           value={newAlbumId}
           inputMode="numeric"
-          onClick={() => setNewAlbumId("")}
+          onClick={() => setNewAlbumId('')}
           onChange={(e) => setNewAlbumId(e.target.value)}
           onKeyPress={handleInputKeyPress}
         />
@@ -118,12 +112,6 @@ function App() {
             <li key={photo.id}>
               <div className="centered-album-info">
                 <strong>[{photo.id}]</strong> {photo.title}
-                <br />
-                {photo.isLoaded ? (
-                  <img src={photo.image.src} alt={photo.title} width="150" />
-                ) : (
-                  <p>Loading Image...</p>
-                )}
               </div>
             </li>
           ))}

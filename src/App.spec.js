@@ -2,12 +2,6 @@ import React from "react";
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import App from "./App";
 
-// Mocking the Image class because Jest does not natively support it.
-global.Image = class {
-  onload() {}
-  onerror() {}
-  decode() {}
-};
 
 describe("App", () => {
   test("renders without errors", () => {
