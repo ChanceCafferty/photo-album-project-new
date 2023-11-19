@@ -32,14 +32,14 @@ function App() {
       );
 
       const data = response.data;
-      const photoData = data.map((photo) => {
+      const photoInfo = data.map((photo) => {
         return {
           id: photo.id,
           title: photo.title,
         };
       });
 
-      setPhotos(photoData);
+      setPhotos(photoInfo);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
